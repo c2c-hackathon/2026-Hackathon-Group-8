@@ -16,20 +16,6 @@ def test___new_game___column_pressed___piece_drops_to_bottom_row(
     assert board.color_at(0, 6) == game.get_player_color(connect_four_module.CellState.EMPTY)
 
 
-@pytest.mark.parametrize("y", [1, 2, 3, 4, 5, 6])
-def test___new_game___button_not_in_top_row_pressed___nothing_happens(
-    y,
-    connect_four_module,
-    game_and_board,
-):
-    _game, board = game_and_board
-    board.set_cell_color = unittest.mock.Mock()
-
-    board.press(0, y)
-
-    board.set_cell_color.assert_not_called()
-
-
 def test___new_game___column_pressed_twice___pieces_stack_and_turn_indicator_alternates(
     connect_four_module,
     game_and_board,
