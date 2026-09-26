@@ -45,7 +45,9 @@ class ConnectFour:
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = find_lowest_empty_row(col)
         self.game_state[row][col] = self.player
-        pass
+        switch_player(self)
+        self.board.play_sound("clack.mp3")
+    
 
     def update_board_colors(self):
         #TODO: Take the current game state and update the board colors accordingly. Hint: look at NeoTrellisGame.py for functions to update the colors and display the colors
@@ -60,8 +62,13 @@ class ConnectFour:
         pass
 
     def is_board_full(self):
-        #TODO: Return whether or not the game state has no more legal moves
-        pass
+        # Return whether or not the game state has no more legal moves
+        for i in range(6):
+            for j in range(8):
+                if self.game_state[i][j] == 0:
+                    return False
+        return True
+        
 
     def get_player_color(self, player) -> tuple[int, int, int]:
         # Return the color for the given player 
@@ -70,9 +77,10 @@ class ConnectFour:
     def is_column_full(self, col: int):
         # Return if the given column is currently full
         for i in range(6):
-            if self.game_state[col][i] == 0:
+            if self.game_state[i][col] == 0:
                 return False
         return True
+
 
     def check_win(self):
         #TODO: Check the game state to see if any player has won or if there is a draw
@@ -84,6 +92,8 @@ class ConnectFour:
 
     def show_tie_game(self):
         #TODO: Display on the board that there was a draw
+
         pass
+
 
 
