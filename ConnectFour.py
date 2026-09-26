@@ -216,7 +216,7 @@ class ConnectFour:
         for row in range(6):
             for column in range(8):
                 if self.game_state[row][column] != 0:
-                    if column >= 3 and column <= 4:
+                    if column <= 4:
                         if (self.game_state[row][column] == self.game_state[row][column+1] == self.game_state[row][column+2] == self.game_state[row][column+3]):
                             # A win has been found in the row
                             return [self.game_state[row][column],row,column]
@@ -246,6 +246,7 @@ class ConnectFour:
             self.won = True
             self.board.play_sound("cheer.mp3")
             new_game_state = self.game_state
+            self.player = win_data[0]
         
 
     #Uses the check_win and the is_board_full methods to see if the game is a tie and plays a sound if so
