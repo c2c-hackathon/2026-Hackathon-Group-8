@@ -109,8 +109,6 @@ class ConnectFour:
         self.show_current_player()
         self.update_board_colors()
         self.board.update_display()
-        self.show_winner()
-        self.show_tie_game()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -136,6 +134,9 @@ class ConnectFour:
         # print(self.game_state)
         self.check_win()
         print("WIN" if self.check_win() != False else "")
+        self.show_winner()
+        self.show_tie_game()
+
     
 
     def update_board_colors(self):
