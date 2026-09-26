@@ -1,3 +1,4 @@
+# Import statements for packages
 import typing
 
 from NeoTrellisGame import NeoTrellisGame, AbstractNeoTrellisGame, Action
@@ -30,7 +31,7 @@ class ConnectFour:
 
         self.board.update_display()
 
-
+# Sets the initial game state
     def __init__(self, board: typing.Optional[AbstractNeoTrellisGame] = None):
         self.board = board if board is not None else NeoTrellisGame(self.tickCallback)
         super().__init__()
@@ -95,6 +96,8 @@ class ConnectFour:
             print(f"player: {self.player}")
             if self.find_lowest_empty_row(x) != -1:
                 self.drop_piece(x)
+            else:
+                self.board.play_sound("error.mp3")
 
         if x == 7 and y == 1:
             print("RESET GAME")
@@ -116,7 +119,7 @@ class ConnectFour:
         return 5
     
     def drop_piece(self, col: int):
-        
+        self.board.play_sound("button_press.mp3")
         self.falling_cells.append([self.player, col, 0])
         self.switch_player()
 
