@@ -45,6 +45,7 @@ class ConnectFour:
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
         ]
+        self.won = False
         self.falling_cells = [] # list of falling cells, each falling cell is [player, col, row]
         print(self.game_state)
         # current player: 1 or 2
@@ -76,7 +77,7 @@ class ConnectFour:
         ]
         self.player = 1
         self.falling_cells = []
-        
+        self.won = False
 
     def register_callbacks(self):
         #TODO: Register callbacks that will be run when buttons are pressed and released
@@ -118,6 +119,8 @@ class ConnectFour:
         return 5
     
     def drop_piece(self, col: int):
+        if self.won:
+            return
         self.board.play_sound("button_press.mp3")
         self.falling_cells.append([self.player, col, 0])
         self.switch_player()
@@ -233,12 +236,19 @@ class ConnectFour:
     
     def show_winner(self):
         #TODO: Display on the board who won
-        if self.check_win() != False:
-             self.board.play_sound("cheer.mp3")
+        win_data = self.check_win()
+        if win_data != False:
+            self.won = True
+            self.board.play_sound("cheer.mp3")
+            new_game_state = self.game_state
+            for i in range(6):
+                for j in range(8):
+                    self.game_state[i][j] = win_data[0]
+        
 
     def show_tie_game(self):
         #TODO: Display on the board that there was a draw
-        if self.is_board_full() and self.check_win() != False:
+        if not self.won and self.is_board_full() and self.check_win() != False:
              self.board.play_sound("aww.mp3")
 
 
