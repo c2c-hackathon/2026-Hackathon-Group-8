@@ -76,8 +76,44 @@ class ConnectFour:
 
     def check_win(self):
         #TODO: Check the game state to see if any player has won or if there is a draw
-        pass
+        # Check rows, columns, and diagonals for a win
+        for row in range(6):
+            for column in range(7):
+                if self.game_state[row][column] != 0:
+                    #Check for a win in the column
+                    if row >= 3:
+                        #Checking the column for a win by iterating through the rows below
+                        if (self.game_state[row][column] == self.game_state[row-1][column] == self.game_state[row-2][column]):
+                            # A win has been found in the column
+                            return [self.game_state[row][column],row,column] 
 
+        # Check for a win in the row
+        for row in range(6):
+            for column in range(7):
+                if self.game_state[row][column] != 0:
+                    if column >= 3:
+                        if (self.game_state[row][column] == self.game_state[row][column-1] == self.game_state[row][column-2]):
+                            # A win has been found in the row
+                            return [self.game_state[row][column],row,column]
+
+        # Check for a win in the diagonals from left to right
+        for row in range(6):
+            for column in range(7):
+                if self.game_state[row][column] != 0:
+                    if column <= 3 and row >= 3:
+                        if (self.game_state[row][column] == self.game_state[row-1][column+1] == self.game_state[row-2][column+2] == self.game_state[row-3][column+3]):
+                            return [self.game_state[row][column],row,column] 
+
+        # Check for a win in the diagonals from right to left
+        for row in range(6):
+                    for column in range(7):
+                        if self.game_state[row][column] != 0:
+                            if column >= 3 and row >= 3:
+                                if (self.game_state[row][column] == self.game_state[row-1][column-1] == self.game_state[row-2][column-2] == self.game_state[row-3][column-3]):
+                                    return [self.game_state[row][column],row,column]
+
+        return False
+    
     def show_winner(self):
         #TODO: Display on the board who won
         pass
