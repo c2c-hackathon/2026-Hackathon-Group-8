@@ -15,12 +15,27 @@ class ConnectFour:
         print(self.game_state)
         # current player: 1 or 2
         self.player = 1
+        on = True
+        self.register_callbacks()
+
+        if on == True:
+            for r in range(0,8):
+                for c in range(2,8):
+                    self.board.set_cell_color(r,c,Colors.WHITE)
+        elif on == False:
+            self.board.clear_board()
+           
+
+        
+
+
+        self.show_current_player()
 
         self.show_current_player()
 
     def reset_game(self):
         #TODO reset the game state to its original empty state
-        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]*6]
+        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]]*6
         
 
     def register_callbacks(self):
@@ -38,6 +53,7 @@ class ConnectFour:
         """
         print(f"Pressed [{x}, {y}]")
         #TODO: Implement what will happen when the button at position x,y is pressed or released
+        print("Test")
         if y == 0:
             self.place_piece(x)
             self.show_current_player()
@@ -55,11 +71,16 @@ class ConnectFour:
         self.game_state[row][col] = self.player
         self.switch_player()
         self.board.play_sound("clack.mp3")
+        print(f"The row is {row} and column is {col}")
     
 
     def update_board_colors(self):
         #TODO: Take the current game state and update the board colors accordingly. Hint: look at NeoTrellisGame.py for functions to update the colors and display the colors
-        pass
+        for r in range(6):
+            for c in range(8):
+                play_set_color = self.get_player_color(self.game_state[r][c])
+                self.board.set_cell_color(r+2,c,play_set_color)
+
 
     def switch_player(self):
         # Change which player is curently placing a piece. Keep track of this in some sort of variable
@@ -82,7 +103,12 @@ class ConnectFour:
 
     def get_player_color(self, player) -> tuple[int, int, int]:
         # Return the color for the given player 
-        return Colors.GREEN if self.player == 1 else Colors.RED
+        if player == 0:
+            return Colors.WHITE
+        elif player == 1:
+            return Colors.GREEN
+        else:
+            return Colors.RED
 
     def is_column_full(self, col: int):
         # Return if the given column is currently full
