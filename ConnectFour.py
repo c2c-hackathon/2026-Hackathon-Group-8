@@ -64,10 +64,11 @@ class ConnectFour:
         #TODO: Implement what will happen when the button at position x,y is pressed or released
         print("Test")
         if y == 0:
-            self.show_current_player()
             print(f"player: {self.player}")
             self.place_piece(x)
             self.update_board_colors()
+            self.show_current_player()
+            self.board.update_display()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -91,6 +92,8 @@ class ConnectFour:
         for r in range(6):
             for c in range(8):
                 play_set_color = self.get_player_color(self.game_state[r][c])
+                print(play_set_color)
+                print(f"c: {c}, r: {r+2}")
                 self.board.set_cell_color(c,r+2,play_set_color)
 
 
@@ -100,7 +103,6 @@ class ConnectFour:
 
     def show_current_player(self):
         #TODO: Function to indicate on the board which player is currently placing a piece
-        self.get_player_color(self.player)
         for i in range(8):
             self.board.set_cell_color(i,0,self.get_player_color(self.player))
 
