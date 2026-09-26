@@ -152,9 +152,9 @@ class ConnectFour:
             for column in range(7):
                 if self.game_state[row][column] != 0:
                     #Check for a win in the column
-                    if row <= 3:
+                    if row <= 2:
                         #Checking the column for a win by iterating through the rows below
-                        if (self.game_state[row][column] == self.game_state[row+1][column] == self.game_state[row+2][column]):
+                        if (self.game_state[row][column] == self.game_state[row+1][column] == self.game_state[row+2][column] == self.game_state[row+3][column]):
                             # A win has been found in the column
                             return [self.game_state[row][column],row,column] 
 
@@ -162,8 +162,8 @@ class ConnectFour:
         for row in range(6):
             for column in range(7):
                 if self.game_state[row][column] != 0:
-                    if column >= 3:
-                        if (self.game_state[row][column] == self.game_state[row][column+1] == self.game_state[row][column+2]):
+                    if column >= 3 and column <= 4:
+                        if (self.game_state[row][column] == self.game_state[row][column+1] == self.game_state[row][column+2] == self.game_state[row][column+3]):
                             # A win has been found in the row
                             return [self.game_state[row][column],row,column]
 
@@ -171,18 +171,17 @@ class ConnectFour:
         for row in range(6):
             for column in range(7):
                 if self.game_state[row][column] != 0:
-                    if column <= 3 and row <= 3:
+                    if column <= 3 and row <= 2:
                         if (self.game_state[row][column] == self.game_state[row+1][column+1] == self.game_state[row+2][column+2] == self.game_state[row+3][column+3]):
                             return [self.game_state[row][column],row,column] 
 
         # Check for a win in the diagonals from right to left
         for row in range(6):
-                    for column in range(7):
-                        if self.game_state[row][column] != 0:
-                            if column >= 3 and row >= 3:
-                                if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
-                                    return [self.game_state[row][column],row,column]
-
+            for column in range(7):
+                if self.game_state[row][column] != 0:
+                    if column >= 3 and row <= 2:
+                        if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
+                            return [self.game_state[row][column],row,column]
         return False
     
     def show_winner(self):
