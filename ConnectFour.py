@@ -29,8 +29,11 @@ class ConnectFour:
             for r in range(0,8):
                 for c in range(2,8):
                     self.board.set_cell_color(r,c,Colors.WHITE)
+            self.board.set_cell_color(7,1,Colors.ORANGE)
+            
         elif on == False:
             self.board.clear_board()
+            
         
 
         self.show_current_player()
@@ -70,6 +73,7 @@ class ConnectFour:
 
         if x == 7 and y == 1:
             print("RESET GAME")
+            self.board.play_sound("ding.mp3")
             self.reset_game()
 
 
