@@ -59,6 +59,9 @@ class FakeNeoTrellisGame:
     def sync(self):
         return None
 
+    def play_sound(self, *_args, **_kwargs):
+        pass
+
     def set_callback(self, x, y, callback):
         self.callbacks[(x, y)] = callback
 
@@ -113,7 +116,7 @@ class FakeNeoTrellisGame:
         return press_handled
 
     def color_at(self, x, y):
-        return self.colors[(x, y)]
+        return self.colors.get((x, y))
 
 
 def _install_fake_hardware_modules():

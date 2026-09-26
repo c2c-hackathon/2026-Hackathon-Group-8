@@ -24,8 +24,8 @@ def test___column_is_full___same_column_pressed___turn_indicator_stays_on_curren
 
     indicator_color_before_extra_press = board.color_at(1, 0)
     player_colors = {
-        game.get_player_color(connect_four_module.CellState.PLAYER_1),
-        game.get_player_color(connect_four_module.CellState.PLAYER_2),
+        board.color_at(0, 7),
+        board.color_at(1, 7),
     }
 
     board.press(0, 0)

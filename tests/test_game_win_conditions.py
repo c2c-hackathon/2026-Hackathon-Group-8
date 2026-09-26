@@ -59,14 +59,26 @@ TIE_MOVES = [7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 7, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 3
 
 
 def replay_moves(connect_four_module, board, moves):
+    """returns the player 1 and player 2 colors after replaying the moves."""
     board.PRESS_DELAY_SECONDS = 0
 
-    for column in moves:
-        assert board.press(column, 0)
+    player_one_color = None
+    player_two_color = None
+    default_color = board.color_at(0, 7)
 
-    if len(moves) % 2 == 0:
-        return connect_four_module.CellState.PLAYER_1
-    return connect_four_module.CellState.PLAYER_2
+    for i, column in enumerate(moves):
+        is_player_one = (i % 2 == 0)
+        assert board.press(column, 0)
+        if is_player_one and player_one_color is None:
+            player_one_color = board.color_at(column, 0)
+        elif not is_player_one and player_two_color is None:
+            for i in range(7, 0, -1):
+                if board.color_at(column, i) != default_color:
+                    player_two_color = board.color_at(column, i)
+                    break
+
+    current_player_color = player_one_color if len(moves) % 2 == 0 else player_two_color
+    return player_one_color, player_two_color, current_player_color
 
 
 def assert_game_is_active(connect_four_module, board):
@@ -89,11 +101,11 @@ def test___three_pieces_in_first_column___column_pressed___vertical_win_is_detec
     game_and_board,
 ):
     game, board = game_and_board
-    current_player = replay_moves(connect_four_module, board, VERTICAL_FIRST_COLUMN_MOVES)
+    player_one_color, player_two_color, current_player = replay_moves(connect_four_module, board, VERTICAL_FIRST_COLUMN_MOVES)
 
     board.press(0, 0)
 
-    assert board.color_at(0, 4) == game.get_player_color(current_player)
+    assert board.color_at(0, 4) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -102,12 +114,12 @@ def test___three_pieces_in_last_column___column_pressed___vertical_win_is_detect
     game_and_board,
 ):
     game, board = game_and_board
-    replay_moves(connect_four_module, board, VERTICAL_FIRST_COLUMN_MOVES)
+    player_one_color, player_two_color, current_player = replay_moves(connect_four_module, board, VERTICAL_FIRST_COLUMN_MOVES)
     board.press(1, 0)  # player 1 misses, player 2's turn
 
     board.press(7, 0)
 
-    assert board.color_at(7, 4) == game.get_player_color(connect_four_module.CellState.PLAYER_2)
+    assert board.color_at(7, 4) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -116,11 +128,11 @@ def test___three_pieces_in_middle_column___column_pressed___vertical_win_is_dete
     game_and_board,
 ):
     game, board = game_and_board
-    current_player = replay_moves(connect_four_module, board, VERTICAL_MIDDLE_COLUMN_MOVES)
+    player_one_color, player_two_color, current_player = replay_moves(connect_four_module, board, VERTICAL_MIDDLE_COLUMN_MOVES)
 
     board.press(4, 0)
 
-    assert board.color_at(4, 4) == game.get_player_color(current_player)
+    assert board.color_at(4, 4) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -129,11 +141,11 @@ def test___three_bottom_row_pieces___adjacent_column_pressed___horizontal_bottom
     game_and_board,
 ):
     game, board = game_and_board
-    current_player = replay_moves(connect_four_module, board, HORIZONTAL_BOTTOM_ROW_MOVES)
+    player_one_color, player_two_color, current_player = replay_moves(connect_four_module, board, HORIZONTAL_BOTTOM_ROW_MOVES)
 
     board.press(3, 0)
 
-    assert board.color_at(3, 7) == game.get_player_color(current_player)
+    assert board.color_at(3, 7) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -142,11 +154,11 @@ def test___three_middle_row_pieces___supported_column_pressed___horizontal_middl
     game_and_board,
 ):
     game, board = game_and_board
-    current_player = replay_moves(connect_four_module, board, HORIZONTAL_MIDDLE_ROW_MOVES)
+    player_one_color, player_two_color, current_player = replay_moves(connect_four_module, board, HORIZONTAL_MIDDLE_ROW_MOVES)
 
     board.press(5, 0)
 
-    assert board.color_at(5, 5) == game.get_player_color(current_player)
+    assert board.color_at(5, 5) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -251,8 +263,8 @@ def test___three_diagonal_pieces___supported_column_pressed___diagonal_win_is_de
     board.press(move_column, 0)
 
     assert board.color_at(
-        expected_column, expected_row + connect_four_module.ROW_OFFSET
-    ) == game.get_player_color(current_player)
+        expected_column, expected_row
+    ) == current_player
     assert_end_game_controls(connect_four_module, board)
 
 
@@ -261,9 +273,9 @@ def test___board_has_one_empty_cell_without_a_winner___final_column_pressed___ti
     game_and_board,
 ):
     game, board = game_and_board
-    current_player = replay_moves(connect_four_module, board, TIE_MOVES)
+    _1, _2, current_player = replay_moves(connect_four_module, board, TIE_MOVES)
 
     board.press(7, 0)
 
-    assert board.color_at(7, 2) == game.get_player_color(current_player)
+    assert board.color_at(7, 2) == current_player
     assert_end_game_controls(connect_four_module, board)
