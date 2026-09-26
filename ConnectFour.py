@@ -80,8 +80,8 @@ class ConnectFour:
         self.show_current_player()
         self.update_board_colors()
         self.board.update_display()
-        self.check_win()
-        print(self.check_win())
+        self.show_winner()
+        self.show_tie_game()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -163,7 +163,8 @@ class ConnectFour:
                             print(self.game_state[row+2][column])
                             print(self.game_state[row+3][column])
                             # A win has been found in the column
-                            return [self.game_state[row][column],row,column] 
+                            return [self.game_state[row][column],row,column]
+                            
                         
 
         # Check for a win in the row
@@ -190,7 +191,6 @@ class ConnectFour:
                             if column >= 4 and row <= 2:
                                 if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
                                     return [self.game_state[row][column],row,column]
-
         return False
     
     def show_winner(self):
@@ -200,7 +200,7 @@ class ConnectFour:
 
     def show_tie_game(self):
         #TODO: Display on the board that there was a draw
-        if is_board_full() and check_win != False:
+        if self.is_board_full() and self.check_win() != False:
              self.board.play_sound("aww.mp3")
 
 
