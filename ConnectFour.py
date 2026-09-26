@@ -11,7 +11,14 @@ class ConnectFour:
         super().__init__()
         self.register_callbacks()
         # 6x8 matrix, 0 = empty, 1 = player 1, 2 = player 2
-        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]]*6
+        self.game_state = [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+        ]
         print(self.game_state)
         # current player: 1 or 2
         self.player = 1
@@ -24,18 +31,20 @@ class ConnectFour:
                     self.board.set_cell_color(r,c,Colors.WHITE)
         elif on == False:
             self.board.clear_board()
-           
-
         
-
-
-        self.show_current_player()
 
         self.show_current_player()
 
     def reset_game(self):
         #TODO reset the game state to its original empty state
-        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]]*6
+        self.game_state = [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+        ]
         
 
     def register_callbacks(self):
@@ -55,8 +64,10 @@ class ConnectFour:
         #TODO: Implement what will happen when the button at position x,y is pressed or released
         print("Test")
         if y == 0:
-            self.place_piece(x)
             self.show_current_player()
+            print(f"player: {self.player}")
+            self.place_piece(x)
+            self.update_board_colors()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -68,10 +79,11 @@ class ConnectFour:
     def place_piece(self, col: int):
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = self.find_lowest_empty_row(col)
+        print(f"The row is {row} and column is {col}")
         self.game_state[row][col] = self.player
         self.switch_player()
         self.board.play_sound("clack.mp3")
-        print(f"The row is {row} and column is {col}")
+        print(self.game_state)
     
 
     def update_board_colors(self):
@@ -79,7 +91,7 @@ class ConnectFour:
         for r in range(6):
             for c in range(8):
                 play_set_color = self.get_player_color(self.game_state[r][c])
-                self.board.set_cell_color(r+2,c,play_set_color)
+                self.board.set_cell_color(c,r+2,play_set_color)
 
 
     def switch_player(self):
