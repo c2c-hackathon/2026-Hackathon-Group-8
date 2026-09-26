@@ -12,7 +12,6 @@ class ConnectFour:
         new_list = []
         self.update_board_colors()
         for i, falling_cell in enumerate(self.falling_cells):
-            print("falling cell")
             player = falling_cell[0]
             col = falling_cell[1]
             row = falling_cell[2]
@@ -67,7 +66,7 @@ class ConnectFour:
         self.show_current_player()
 
     def reset_game(self):
-        #TODO reset the game state to its original empty state
+        # reset the game state to its original empty state
         self.game_state = [
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
@@ -96,9 +95,8 @@ class ConnectFour:
         See NeoTrellisGame.set_callback() for info about callbacks.
         """
         # print(f"Pressed [{x}, {y}]")
-        #TODO: Implement what will happen when the button at position x,y is pressed or released
+        # Implement what will happen when the button at position x,y is pressed or released
         if y == 0:
-            print(f"player: {self.player}")
             if self.find_lowest_empty_row(x) != -1:
                 self.drop_piece(x)
             else:
@@ -131,12 +129,12 @@ class ConnectFour:
 
     #Places the piece in the lowest empty row of the column and checks for a win or tie
     def place_piece(self, col: int, player: int):
-        #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
+        # Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = self.find_lowest_empty_row(col)
         if row == -1:
             self.board.play_sound("error.mp3")
             return
-        print(f"The row is {row} and column is {col}")
+        print(f"Place at [{col}, {row+2}] by player {player}")
         self.game_state[row][col] = player
         self.board.play_sound("clack.mp3")
         # print(self.game_state)
@@ -152,7 +150,7 @@ class ConnectFour:
         for c in range(7):
             self.board.set_cell_color(c, 1, (0, 0, 0))
         self.board.set_cell_color(7,1,Colors.ORANGE)
-        #TODO: Take the current game state and update the board colors accordingly. Hint: look at NeoTrellisGame.py for functions to update the colors and display the colors
+        # Take the current game state and update the board colors accordingly. Hint: look at NeoTrellisGame.py for functions to update the colors and display the colors
         for r in range(6):
             for c in range(8):
                 play_set_color = self.get_player_color(self.game_state[r][c])
@@ -165,7 +163,7 @@ class ConnectFour:
 
     #Alternates between green and red for the colors of the curent player indicator on the board
     def show_current_player(self):
-        #TODO: Function to indicate on the board which player is currently placing a piece
+        # Function to indicate on the board which player is currently placing a piece
         for i in range(8):
             self.board.set_cell_color(i,0,self.get_player_color(self.player))
 
@@ -235,29 +233,24 @@ class ConnectFour:
         for row in range(6):
                     for column in range(8):
                         if self.game_state[row][column] != 0:
-                            if column >= 4 and row <= 2:
+                            if column >= 3 and row <= 2:
                                 if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
                                     return [self.game_state[row][column],row,column]
         return False
 
     #Displays on the board who won and plays the appropriate sound
     def show_winner(self):
-        #TODO: Display on the board who won
+        # Display on the board who won
         win_data = self.check_win()
         if win_data != False:
             self.won = True
             self.board.play_sound("cheer.mp3")
             new_game_state = self.game_state
-            for i in range(6):
-                for j in range(8):
-                    self.game_state[i][j] = win_data[0]
         
 
     #Uses the check_win and the is_board_full methods to see if the game is a tie and plays a sound if so
     def show_tie_game(self):
-        #TODO: Display on the board that there was a draw
+        # Display on the board that there was a draw
         if not self.won and self.is_board_full() and self.check_win() != False:
              self.board.play_sound("aww.mp3")
-
-
 

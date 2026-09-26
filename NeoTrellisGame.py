@@ -61,7 +61,7 @@ class NeoTrellisGame(AbstractNeoTrellisGame):
     DO NOT MODIFY!!!! >:(
     """
     
-    def __init__(self, tickCallback):
+    def __init__(self, tickCallback): # added tickCallback
         self._board = None
         pygame.mixer.init()
         self.init_hardware()
