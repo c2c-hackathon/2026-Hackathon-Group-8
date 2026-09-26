@@ -45,6 +45,7 @@ class ConnectFour:
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
         ]
+        self.player = 1
         
 
     def register_callbacks(self):
@@ -66,9 +67,15 @@ class ConnectFour:
         if y == 0:
             print(f"player: {self.player}")
             self.place_piece(x)
-            self.update_board_colors()
-            self.show_current_player()
-            self.board.update_display()
+
+        if x == 7 and y == 1:
+            print("RESET GAME")
+            self.reset_game()
+
+
+        self.show_current_player()
+        self.update_board_colors()
+        self.board.update_display()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
