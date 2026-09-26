@@ -3,6 +3,7 @@ import typing
 from NeoTrellisGame import NeoTrellisGame, AbstractNeoTrellisGame, Action
 from adafruit_neotrellis.multitrellis import MultiTrellis
 from adafruit_neotrellis.neotrellis import NeoTrellis
+import Colors
 
 class ConnectFour:
     def __init__(self, board: typing.Optional[AbstractNeoTrellisGame] = None):
@@ -13,17 +14,17 @@ class ConnectFour:
         # current player: 1 or 2
         self.player = 1
 
+        self.show_current_player()
+
     def reset_game(self):
         #TODO reset the game state to its original empty state
         self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]*6]
-        pass
+        
 
     def register_callbacks(self):
         #TODO: Register callbacks that will be run when buttons are pressed and released
         self.board.set_callback(0, 0, self.handle_button_event) # Example of how to register a callback (function) for button 0, 0. Must be done for every button that runs a function
         self.board.activate_key(0, 0, Action.BUTTON_PRESSED) # Even though the callback is set, if the key is not enabled it will not be run. This is how you enable
-
-        pass
   
     def handle_button_event(self, x:int, y: int, action: Action):
         """
@@ -33,6 +34,7 @@ class ConnectFour:
         #TODO: Implement what will happen when the button at position x,y is pressed or released
         if y == 0:
             place_piece(x)
+            show_current_player()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -59,7 +61,9 @@ class ConnectFour:
 
     def show_current_player(self):
         #TODO: Function to indicate on the board which player is currently placing a piece
-        pass
+        self.get_player_color(self.player)
+        for i in range(8):
+            self.board.set_cell_color(i,0,self.get_player_color(self.player))
 
     def is_board_full(self):
         # Return whether or not the game state has no more legal moves
@@ -72,7 +76,7 @@ class ConnectFour:
 
     def get_player_color(self, player) -> tuple[int, int, int]:
         # Return the color for the given player 
-        return Colors.GREEN if player == 0 else Colors.RED
+        return Colors.GREEN if player == 1 else Colors.RED
 
     def is_column_full(self, col: int):
         # Return if the given column is currently full
@@ -80,7 +84,6 @@ class ConnectFour:
             if self.game_state[i][col] == 0:
                 return False
         return True
-
 
     def check_win(self):
         #TODO: Check the game state to see if any player has won or if there is a draw
@@ -124,12 +127,13 @@ class ConnectFour:
     
     def show_winner(self):
         #TODO: Display on the board who won
-        pass
+        if self.check_win() != False:
+             self.board.play_sound("cheer.mp3")
 
     def show_tie_game(self):
         #TODO: Display on the board that there was a draw
-
-        pass
+        if is_board_full() and check_win != False:
+             self.board.play_sound("aww.mp3")
 
 
 
