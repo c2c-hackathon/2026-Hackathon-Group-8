@@ -9,8 +9,10 @@ class ConnectFour:
     def __init__(self, board: typing.Optional[AbstractNeoTrellisGame] = None):
         self.board = board if board is not None else NeoTrellisGame()
         super().__init__()
+        self.register_callbacks()
         # 6x8 matrix, 0 = empty, 1 = player 1, 2 = player 2
-        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]*6]
+        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]]*6
+        print(self.game_state)
         # current player: 1 or 2
         self.player = 1
 
@@ -23,31 +25,35 @@ class ConnectFour:
 
     def register_callbacks(self):
         #TODO: Register callbacks that will be run when buttons are pressed and released
-        self.board.set_callback(0, 0, self.handle_button_event) # Example of how to register a callback (function) for button 0, 0. Must be done for every button that runs a function
-        self.board.activate_key(0, 0, Action.BUTTON_PRESSED) # Even though the callback is set, if the key is not enabled it will not be run. This is how you enable
+        for i in range(8):
+            for j in range(8):
+                self.board.activate_key(i, j, Action.BUTTON_PRESSED, True) # Even though the callback is set, if the key is not enabled it will not be run. This is how you enable
+
+                self.board.set_callback(i, j, self.handle_button_event) # Example of how to register a callback (function) for button 0, 0. Must be done for every button that runs a function
   
     def handle_button_event(self, x:int, y: int, action: Action):
         """
         This is an example of how a callback function will look. It takes an x value, y value, and action, which will indicate what button activated the callback and what action the user did to run it.
         See NeoTrellisGame.set_callback() for info about callbacks.
         """
+        print(f"Pressed [{x}, {y}]")
         #TODO: Implement what will happen when the button at position x,y is pressed or released
         if y == 0:
-            place_piece(x)
-            show_current_player()
+            self.place_piece(x)
+            self.show_current_player()
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
         for i in range(6):
             if self.game_state[i][col] != 0:
                 return i - 1
-        return 7
+        return 5
 
     def place_piece(self, col: int):
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
-        row = find_lowest_empty_row(col)
+        row = self.find_lowest_empty_row(col)
         self.game_state[row][col] = self.player
-        switch_player(self)
+        self.switch_player()
         self.board.play_sound("clack.mp3")
     
 
@@ -56,8 +62,8 @@ class ConnectFour:
         pass
 
     def switch_player(self):
-        # Change which player is curently placing a piece. Keep track of this in a variable
-        self.player = 1 if player == 2 else 2
+        # Change which player is curently placing a piece. Keep track of this in some sort of variable
+        self.player = 1 if self.player == 2 else 2
 
     def show_current_player(self):
         #TODO: Function to indicate on the board which player is currently placing a piece
@@ -76,7 +82,7 @@ class ConnectFour:
 
     def get_player_color(self, player) -> tuple[int, int, int]:
         # Return the color for the given player 
-        return Colors.GREEN if player == 1 else Colors.RED
+        return Colors.GREEN if self.player == 1 else Colors.RED
 
     def is_column_full(self, col: int):
         # Return if the given column is currently full
