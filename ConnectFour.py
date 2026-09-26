@@ -6,8 +6,33 @@ from adafruit_neotrellis.neotrellis import NeoTrellis
 import Colors
 
 class ConnectFour:
+
+    def tickCallback(self):
+        new_list = []
+        self.update_board_colors()
+        for i, falling_cell in enumerate(self.falling_cells):
+            print("falling cell")
+            player = falling_cell[0]
+            col = falling_cell[1]
+            row = falling_cell[2]
+            # draw falling cell
+            self.board.set_cell_color(col, row, self.get_player_color(player))
+
+            falling_cell[2] += 1
+            if self.find_lowest_empty_row(col) == -1:
+                continue
+            if falling_cell[2] != self.find_lowest_empty_row(col)+2:
+                new_list.append(falling_cell)
+            else:
+                self.place_piece(col, player)
+
+        self.falling_cells = new_list
+
+        self.board.update_display()
+
+
     def __init__(self, board: typing.Optional[AbstractNeoTrellisGame] = None):
-        self.board = board if board is not None else NeoTrellisGame()
+        self.board = board if board is not None else NeoTrellisGame(self.tickCallback)
         super().__init__()
         self.register_callbacks()
         # 6x8 matrix, 0 = empty, 1 = player 1, 2 = player 2
@@ -19,7 +44,8 @@ class ConnectFour:
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
         ]
-        # print(self.game_state)
+        self.falling_cells = [] # list of falling cells, each falling cell is [player, col, row]
+        print(self.game_state)
         # current player: 1 or 2
         self.player = 1
         on = True
@@ -34,7 +60,6 @@ class ConnectFour:
         elif on == False:
             self.board.clear_board()
             
-        
 
         self.show_current_player()
 
@@ -66,10 +91,10 @@ class ConnectFour:
         """
         # print(f"Pressed [{x}, {y}]")
         #TODO: Implement what will happen when the button at position x,y is pressed or released
-        # print("Test")
         if y == 0:
             print(f"player: {self.player}")
-            self.place_piece(x)
+            if self.find_lowest_empty_row(x) != -1:
+                self.drop_piece(x)
 
         if x == 7 and y == 1:
             print("RESET GAME")
@@ -80,8 +105,6 @@ class ConnectFour:
         self.show_current_player()
         self.update_board_colors()
         self.board.update_display()
-        self.check_win()
-        print(self.check_win())
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -89,27 +112,35 @@ class ConnectFour:
             if self.game_state[i][col] != 0:
                 return i - 1
         return 5
+    
+    def drop_piece(self, col: int):
+        
+        self.falling_cells.append([self.player, col, 0])
+        self.switch_player()
 
-    def place_piece(self, col: int):
+    def place_piece(self, col: int, player: int):
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = self.find_lowest_empty_row(col)
         if row == -1:
             self.board.play_sound("error.mp3")
             return
-        # print(f"The row is {row} and column is {col}")
-        self.game_state[row][col] = self.player
-        self.switch_player()
+        print(f"The row is {row} and column is {col}")
+        self.game_state[row][col] = player
         self.board.play_sound("clack.mp3")
         # print(self.game_state)
+        self.check_win()
+        print("WIN" if self.check_win() != False else "")
     
 
     def update_board_colors(self):
+        self.show_current_player()
+        for c in range(7):
+            self.board.set_cell_color(c, 1, (0, 0, 0))
+        self.board.set_cell_color(7,1,Colors.ORANGE)
         #TODO: Take the current game state and update the board colors accordingly. Hint: look at NeoTrellisGame.py for functions to update the colors and display the colors
         for r in range(6):
             for c in range(8):
                 play_set_color = self.get_player_color(self.game_state[r][c])
-                # print(play_set_color)
-                # print(f"c: {c}, r: {r+2}")
                 self.board.set_cell_color(c,r+2,play_set_color)
 
 
