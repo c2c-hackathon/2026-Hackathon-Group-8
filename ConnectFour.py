@@ -19,7 +19,7 @@ class ConnectFour:
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
         ]
-        print(self.game_state)
+        # print(self.game_state)
         # current player: 1 or 2
         self.player = 1
         on = True
@@ -64,9 +64,9 @@ class ConnectFour:
         This is an example of how a callback function will look. It takes an x value, y value, and action, which will indicate what button activated the callback and what action the user did to run it.
         See NeoTrellisGame.set_callback() for info about callbacks.
         """
-        print(f"Pressed [{x}, {y}]")
+        # print(f"Pressed [{x}, {y}]")
         #TODO: Implement what will happen when the button at position x,y is pressed or released
-        print("Test")
+        # print("Test")
         if y == 0:
             print(f"player: {self.player}")
             self.place_piece(x)
@@ -80,6 +80,8 @@ class ConnectFour:
         self.show_current_player()
         self.update_board_colors()
         self.board.update_display()
+        self.check_win()
+        print(self.check_win())
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
@@ -94,11 +96,11 @@ class ConnectFour:
         if row == -1:
             self.board.play_sound("error.mp3")
             return
-        print(f"The row is {row} and column is {col}")
+        # print(f"The row is {row} and column is {col}")
         self.game_state[row][col] = self.player
         self.switch_player()
         self.board.play_sound("clack.mp3")
-        print(self.game_state)
+        # print(self.game_state)
     
 
     def update_board_colors(self):
@@ -106,8 +108,8 @@ class ConnectFour:
         for r in range(6):
             for c in range(8):
                 play_set_color = self.get_player_color(self.game_state[r][c])
-                print(play_set_color)
-                print(f"c: {c}, r: {r+2}")
+                # print(play_set_color)
+                # print(f"c: {c}, r: {r+2}")
                 self.board.set_cell_color(c,r+2,play_set_color)
 
 
@@ -145,22 +147,28 @@ class ConnectFour:
                 return False
         return True
 
+
     def check_win(self):
         #TODO: Check the game state to see if any player has won or if there is a draw
         # Check rows, columns, and diagonals for a win
         for row in range(6):
-            for column in range(7):
+            for column in range(8):
                 if self.game_state[row][column] != 0:
                     #Check for a win in the column
                     if row <= 2:
                         #Checking the column for a win by iterating through the rows below
                         if (self.game_state[row][column] == self.game_state[row+1][column] == self.game_state[row+2][column] == self.game_state[row+3][column]):
+                            print(self.game_state[row][column])
+                            print(self.game_state[row+1][column])
+                            print(self.game_state[row+2][column])
+                            print(self.game_state[row+3][column])
                             # A win has been found in the column
                             return [self.game_state[row][column],row,column] 
+                        
 
         # Check for a win in the row
         for row in range(6):
-            for column in range(7):
+            for column in range(8):
                 if self.game_state[row][column] != 0:
                     if column >= 3 and column <= 4:
                         if (self.game_state[row][column] == self.game_state[row][column+1] == self.game_state[row][column+2] == self.game_state[row][column+3]):
@@ -169,19 +177,20 @@ class ConnectFour:
 
         # Check for a win in the diagonals from left to right
         for row in range(6):
-            for column in range(7):
+            for column in range(8):
                 if self.game_state[row][column] != 0:
-                    if column <= 3 and row <= 2:
+                    if column <= 4 and row <= 2:
                         if (self.game_state[row][column] == self.game_state[row+1][column+1] == self.game_state[row+2][column+2] == self.game_state[row+3][column+3]):
                             return [self.game_state[row][column],row,column] 
 
         # Check for a win in the diagonals from right to left
         for row in range(6):
-            for column in range(7):
-                if self.game_state[row][column] != 0:
-                    if column >= 3 and row <= 2:
-                        if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
-                            return [self.game_state[row][column],row,column]
+                    for column in range(8):
+                        if self.game_state[row][column] != 0:
+                            if column >= 4 and row <= 2:
+                                if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
+                                    return [self.game_state[row][column],row,column]
+
         return False
     
     def show_winner(self):
