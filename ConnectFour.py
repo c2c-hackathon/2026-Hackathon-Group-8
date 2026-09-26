@@ -7,7 +7,7 @@ from adafruit_neotrellis.neotrellis import NeoTrellis
 import Colors
 
 class ConnectFour:
-
+    # Function to handle the ticking of the game, updating falling cells and checking for completed moves.
     def tickCallback(self):
         new_list = []
         self.update_board_colors()
@@ -20,6 +20,8 @@ class ConnectFour:
             self.board.set_cell_color(col, row, self.get_player_color(player))
 
             falling_cell[2] += 1
+
+            #logic for determining if the falling cell has reached the lowest empty row
             if self.find_lowest_empty_row(col) == -1:
                 continue
             if falling_cell[2] != self.find_lowest_empty_row(col)+2:
@@ -28,7 +30,6 @@ class ConnectFour:
                 self.place_piece(col, player)
 
         self.falling_cells = new_list
-
         self.board.update_display()
 
 # Sets the initial game state
@@ -52,12 +53,12 @@ class ConnectFour:
         on = True
         self.register_callbacks()
 
+        # Initializes the board with colors for the starting position
         if on == True:
             for r in range(0,8):
                 for c in range(2,8):
                     self.board.set_cell_color(r,c,Colors.WHITE)
             self.board.set_cell_color(7,1,Colors.ORANGE)
-            
         elif on == False:
             self.board.clear_board()
             
@@ -78,14 +79,16 @@ class ConnectFour:
         self.falling_cells = []
         
 
+    #Function that handles all button presses
     def register_callbacks(self):
-        #TODO: Register callbacks that will be run when buttons are pressed and released
+        #Activates all of the buttons and assigns callbacks that will be run when buttons are pressed and released
         for i in range(8):
             for j in range(8):
                 self.board.activate_key(i, j, Action.BUTTON_PRESSED, True) # Even though the callback is set, if the key is not enabled it will not be run. This is how you enable
 
                 self.board.set_callback(i, j, self.handle_button_event) # Example of how to register a callback (function) for button 0, 0. Must be done for every button that runs a function
-  
+
+    #Function that handles what buttons do what when pressed, and controls the resets and the game flow
     def handle_button_event(self, x:int, y: int, action: Action):
         """
         This is an example of how a callback function will look. It takes an x value, y value, and action, which will indicate what button activated the callback and what action the user did to run it.
@@ -116,12 +119,14 @@ class ConnectFour:
             if self.game_state[i][col] != 0:
                 return i - 1
         return 5
-    
+
+    #Drops the piece into the column, starts the falling black animation
     def drop_piece(self, col: int):
         self.board.play_sound("button_press.mp3")
         self.falling_cells.append([self.player, col, 0])
         self.switch_player()
 
+    #Places the piece in the lowest empty row of the column and checks for a win or tie
     def place_piece(self, col: int, player: int):
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = self.find_lowest_empty_row(col)
@@ -138,7 +143,7 @@ class ConnectFour:
         self.show_tie_game()
 
     
-
+    #Updates the colors of the board based on the game's current state
     def update_board_colors(self):
         self.show_current_player()
         for c in range(7):
@@ -150,16 +155,18 @@ class ConnectFour:
                 play_set_color = self.get_player_color(self.game_state[r][c])
                 self.board.set_cell_color(c,r+2,play_set_color)
 
-
+    #When a block is selected, switch the current player
     def switch_player(self):
         # Change which player is curently placing a piece. Keep track of this in some sort of variable
         self.player = 1 if self.player == 2 else 2
 
+    #Alternates between green and red for the colors of the curent player indicator on the board
     def show_current_player(self):
         #TODO: Function to indicate on the board which player is currently placing a piece
         for i in range(8):
             self.board.set_cell_color(i,0,self.get_player_color(self.player))
 
+    #Checks if the board is full, used later to check for a tie
     def is_board_full(self):
         # Return whether or not the game state has no more legal moves
         for i in range(6):
@@ -168,7 +175,7 @@ class ConnectFour:
                     return False
         return True
         
-
+    #Returns the color associated with a given player number
     def get_player_color(self, player) -> tuple[int, int, int]:
         # Return the color for the given player 
         if player == 0:
@@ -178,6 +185,7 @@ class ConnectFour:
         else:
             return Colors.RED
 
+    #Goes through each row of the specified column to check if it is full
     def is_column_full(self, col: int):
         # Return if the given column is currently full
         for i in range(6):
@@ -186,9 +194,11 @@ class ConnectFour:
         return True
 
 
+    #Checks the entire board for a win in any direction (vertical, horizontal, or diagonal)
     def check_win(self):
-        #TODO: Check the game state to see if any player has won or if there is a draw
         # Check rows, columns, and diagonals for a win
+
+        #COLUMN CHECK
         for row in range(6):
             for column in range(8):
                 if self.game_state[row][column] != 0:
@@ -196,16 +206,12 @@ class ConnectFour:
                     if row <= 2:
                         #Checking the column for a win by iterating through the rows below
                         if (self.game_state[row][column] == self.game_state[row+1][column] == self.game_state[row+2][column] == self.game_state[row+3][column]):
-                            print(self.game_state[row][column])
-                            print(self.game_state[row+1][column])
-                            print(self.game_state[row+2][column])
-                            print(self.game_state[row+3][column])
                             # A win has been found in the column
                             return [self.game_state[row][column],row,column]
                             
                         
 
-        # Check for a win in the row
+        #ROW CHECK
         for row in range(6):
             for column in range(8):
                 if self.game_state[row][column] != 0:
@@ -214,7 +220,7 @@ class ConnectFour:
                             # A win has been found in the row
                             return [self.game_state[row][column],row,column]
 
-        # Check for a win in the diagonals from left to right
+        #LEFT TO RIGHT DIAGONAL CHECK
         for row in range(6):
             for column in range(8):
                 if self.game_state[row][column] != 0:
@@ -222,7 +228,7 @@ class ConnectFour:
                         if (self.game_state[row][column] == self.game_state[row+1][column+1] == self.game_state[row+2][column+2] == self.game_state[row+3][column+3]):
                             return [self.game_state[row][column],row,column] 
 
-        # Check for a win in the diagonals from right to left
+        #RIGHT TO LEFT DIAGONAL CHECK
         for row in range(6):
                     for column in range(8):
                         if self.game_state[row][column] != 0:
@@ -230,12 +236,14 @@ class ConnectFour:
                                 if (self.game_state[row][column] == self.game_state[row+1][column-1] == self.game_state[row+2][column-2] == self.game_state[row+3][column-3]):
                                     return [self.game_state[row][column],row,column]
         return False
-    
+
+    #Displays on the board who won and plays the appropriate sound
     def show_winner(self):
-        #TODO: Display on the board who won
+        
         if self.check_win() != False:
              self.board.play_sound("cheer.mp3")
 
+    #Uses the check_win and the is_board_full methods to see if the game is a tie and plays a sound if so
     def show_tie_game(self):
         #TODO: Display on the board that there was a draw
         if self.is_board_full() and self.check_win() != False:
