@@ -75,6 +75,7 @@ class ConnectFour:
             [0, 0, 0, 0, 0, 0, 0, 0],
         ]
         self.player = 1
+        self.falling_cells = []
         
 
     def register_callbacks(self):
