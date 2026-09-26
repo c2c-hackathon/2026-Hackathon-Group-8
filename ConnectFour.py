@@ -8,11 +8,14 @@ class ConnectFour:
     def __init__(self, board: typing.Optional[AbstractNeoTrellisGame] = None):
         self.board = board if board is not None else NeoTrellisGame()
         super().__init__()
+        # 6x8 matrix, 0 = empty, 1 = player 1, 2 = player 2
         self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]*6]
+        # current player: 1 or 2
+        self.player = 1
 
     def reset_game(self):
         #TODO reset the game state to its original empty state
-        self.game_state = [[0, 0, 0, 0, 0, 0]*8]
+        self.game_state = [[0, 0, 0, 0, 0, 0, 0, 0]*6]
         pass
 
     def register_callbacks(self):
@@ -28,12 +31,12 @@ class ConnectFour:
         See NeoTrellisGame.set_callback() for info about callbacks.
         """
         #TODO: Implement what will happen when the button at position x,y is pressed or released
-  
-        pass
+        if y == 0:
+            place_piece(x)
 
     def find_lowest_empty_row(self, col: int):
         # Return the lowest empty row in the column.
-        for i in range(2, 8):
+        for i in range(6):
             if self.game_state[i][col] != 0:
                 return i - 1
         return 7
@@ -41,6 +44,7 @@ class ConnectFour:
     def place_piece(self, col: int):
         #TODO: Finds the legal move in the column, and updates the game state to reflect the new piece, checking to see if a player has won with that new piece. Don't forget to play a sound!
         row = find_lowest_empty_row(col)
+        self.game_state[row][col] = self.player
         pass
 
     def update_board_colors(self):
@@ -48,8 +52,8 @@ class ConnectFour:
         pass
 
     def switch_player(self):
-        #TODO: Change which player is curently placing a piece. Keep track of this in some sort of variable
-        pass
+        # Change which player is curently placing a piece. Keep track of this in some sort of variable
+        self.player = 1 if player == 2 else 2
 
     def show_current_player(self):
         #TODO: Function to indicate on the board which player is currently placing a piece
@@ -57,15 +61,18 @@ class ConnectFour:
 
     def is_board_full(self):
         #TODO: Return whether or not the game state has no more legal moves
-        pass  
+        pass
 
     def get_player_color(self, player) -> tuple[int, int, int]:
-        #TODO: Return the color for the given player 
-        pass
+        # Return the color for the given player 
+        return Colors.GREEN if player == 0 else Colors.RED
 
     def is_column_full(self, col: int):
-        #TODO: Return if the given column is currently full
-        pass
+        # Return if the given column is currently full
+        for i in range(6):
+            if self.game_state[col][i] == 0:
+                return False
+        return True
 
     def check_win(self):
         #TODO: Check the game state to see if any player has won or if there is a draw
