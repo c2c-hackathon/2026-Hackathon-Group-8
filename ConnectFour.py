@@ -54,7 +54,7 @@ class ConnectFour:
         pass
 
     def switch_player(self):
-        # Change which player is curently placing a piece. Keep track of this in some sort of variable
+        # Change which player is curently placing a piece. Keep track of this in a variable
         self.player = 1 if player == 2 else 2
 
     def show_current_player(self):
@@ -89,7 +89,7 @@ class ConnectFour:
             for column in range(7):
                 if self.game_state[row][column] != 0:
                     #Check for a win in the column
-                    if row >= 3:
+                    if row <= 3:
                         #Checking the column for a win by iterating through the rows below
                         if (self.game_state[row][column] == self.game_state[row-1][column] == self.game_state[row-2][column]):
                             # A win has been found in the column
@@ -108,7 +108,7 @@ class ConnectFour:
         for row in range(6):
             for column in range(7):
                 if self.game_state[row][column] != 0:
-                    if column <= 3 and row >= 3:
+                    if column <= 3 and row <= 3:
                         if (self.game_state[row][column] == self.game_state[row-1][column+1] == self.game_state[row-2][column+2] == self.game_state[row-3][column+3]):
                             return [self.game_state[row][column],row,column] 
 
