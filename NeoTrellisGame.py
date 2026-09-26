@@ -61,11 +61,12 @@ class NeoTrellisGame(AbstractNeoTrellisGame):
     DO NOT MODIFY!!!! >:(
     """
     
-    def __init__(self):
+    def __init__(self, tickCallback):
         self._board = None
         pygame.mixer.init()
         self.init_hardware()
         self._sounds = {}
+        self.tickCallback = tickCallback
 
     def init_hardware(self):
         """
@@ -166,6 +167,8 @@ class NeoTrellisGame(AbstractNeoTrellisGame):
         Read all board events and call any callbacks associated with them. 
         """
         self._board.sync()
+        self.tickCallback()
+        
 
     def set_callback(self, x: int, y: int, callback) -> None:
         """
